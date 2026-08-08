@@ -1,33 +1,97 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>判定結果</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>判定結果</title>
+
+    <link rel="'static', filename='style.css') }}
 </head>
+
 <body>
-<div class="container">
-<h1>判定結果</h1>
-<div class="result-card">
-<div class="rank {{ result.rank|lower }}">{{ result.rank }}</div>
-<div class="score">{{ result.score }} 点</div>
-<h2>基本情報</h2>
-<p>BPM: {{ result.bpm }}</p>
-<p>曲の長さ: {{ result.duration }}秒</p>
-<p>音量変化: {{ result.volume_change }}</p>
-<p>音の高低差: {{ result.pitch_range }}</p>
-<p>音の高低変化率: {{ result.pitch_speed }}</p>
-<hr>
-<h2>詳細スコア</h2>
-<p>BPM: {{ result.bpm_score }}点</p>
-<p>曲の長さ: {{ result.duration_score }}点</p>
-<p>音量変化: {{ result.volume_score }}点</p>
-<p>音の高低差: {{ result.range_score }}点</p>
-<p>音の高低変化率: {{ result.speed_score }}点</p>
-</div>
-<br>
-<a href="/" class="btn">もう一度診断</a>
-</div>
+
+    <div class="container">
+
+        <h1>判定結果</h1>
+
+        <div class="result-card">
+
+            <div class="rank {{ result.rank|lower }}">
+                {{ result.rank }}
+            </div>
+
+            <div class="score">
+                {{ result.score }} 点
+            </div>
+
+            <h2>基本情報</h2>
+
+            <p>
+                BPM:
+                {{ result.bpm }}
+            </p>
+
+            <p>
+                曲の長さ:
+                {{ result.duration }}秒
+            </p>
+
+            <p>
+                音量変化:
+                {{ result.volume_change }}
+            </p>
+
+            <p>
+                音の高低差:
+                {{ result.pitch_range }}
+            </p>
+
+            <p>
+                音の高低変化率:
+                {{ result.pitch_speed }}
+            </p>
+
+            <hr>
+
+            <h2>詳細スコア</h2>
+
+            <p>
+                BPM:
+                {{ result.bpm_score }}点
+            </p>
+
+            <p>
+                曲の長さ:
+                {{ result.duration_score }}点
+            </p>
+
+            <p>
+                音量変化:
+                {{ result.volume_score }}点
+            </p>
+
+            <p>
+                音の高低差:
+                {{ result.range_score }}点
+            </p>
+
+            <p>
+                音の高低変化率:
+                {{ result.speed_score }}点
+            </p>
+
+        </div>
+
+        <br>
+
+        /
+            もう一度診断
+        </a>
+
+    </div>
+
 </body>
+
 </html>
