@@ -3,168 +3,90 @@ import numpy as np
 
 
 def analyze_mp3(path):
-
-    # ------------------
-    # 音源読み込み
-    # ------------------
-
     y, sr = librosa.load(path)
 
-    # ------------------
-    # BPM
-    # ------------------
-
-    tempo, _ = librosa.beat.beat_track(
-        y=y,
-        sr=sr
-    )
-
+    tempo, _ = librosa.beat.beat_track(y=y, sr=sr)
     tempo = float(np.mean(tempo))
 
-    # BPM倍取り補正
-
     if tempo > 180:
-        tempo = tempo / 2
+        tempo /= 2
 
-    bpm_score = min(
-        20,
-        tempo / 150 * 20
-    )
+    bpm_score = min(15, tempo / 160 * 15)
 
-    # ------------------
-    # 曲の長さ
-    # ------------------
+    duration = librosa.get_duration(y=y, sr=sr)
+    minutes = duration / 60
 
-    duration = librosa.get_duration(
-        y=y,
-        sr=sr
-    )
-
-    if duration <= 180:
+    if minutes < 3:
         duration_score = 10
-
-    elif duration <= 300:
-        duration_score = 5
-
+    elif minutes < 4:
+        duration_score = 8
+    elif minutes < 5:
+        duration_score = 6
+    elif minutes < 6:
+        duration_score = 4
     else:
         duration_score = 0
 
-    # ------------------
-    # 音量変化
-    # ------------------
-
     rms = librosa.feature.rms(y=y)[0]
+    volume_change = float(np.std(rms))
+    volume_score = min(20, volume_change * 180)
 
-    volume_change = np.std(rms)
+    centroid = librosa.feature.spectral_centroid(y=y, sr=sr)[0]
 
-    volume_score = min(
-        30,
-        volume_change * 250
-    )
+    pitch_speed = float(np.std(np.diff(centroid)))
+    speed_score = min(20, (pitch_speed / 25) ** 1.5)
 
-    # ------------------
-    # 音の高低差
-    # ------------------
+    block = max(10, len(centroid) // 20)
+    changes = 0
 
-    centroid = librosa.feature.spectral_centroid(
-        y=y,
-        sr=sr
-    )[0]
+    for i in range(block, len(centroid), block):
+        prev = np.mean(centroid[i-block:i])
+        cur = np.mean(centroid[i:min(i + block, len(centroid))])
 
-    pitch_range = (
-        np.max(centroid)
-        - np.min(centroid)
-    )
+        if abs(cur - prev) > np.std(centroid) * 0.3:
+            changes += 1
 
-    range_score = min(
-        10,
-        pitch_range / 1200
-    )
+    progression_score = min(20, changes * 1.5)
 
-    # ------------------
-    # 音の高低変化率
-    # ------------------
-
-    pitch_speed = np.std(
-        np.diff(centroid)
-    )
-
-    speed_score = min(
-        30,
-        (pitch_speed / 25) ** 1.3
-    )
-
-    # ------------------
-    # 合計
-    # ------------------
+    bandwidth = librosa.feature.spectral_bandwidth(y=y, sr=sr)[0]
+    instrument_density = float(np.mean(bandwidth))
+    density_score = min(15, instrument_density / 250)
 
     score = (
-        bpm_score
-        + duration_score
-        + volume_score
-        + range_score
-        + speed_score
+        bpm_score +
+        duration_score +
+        volume_score +
+        speed_score +
+        progression_score +
+        density_score
     )
 
-    score = int(
-        min(score, 100)
-    )
-
-    # ------------------
-    # ランク
-    # ------------------
+    score = int(min(score, 100))
 
     if score >= 85:
-        rank = "S"
-
+        rank = 'S'
     elif score >= 70:
-        rank = "A"
-
+        rank = 'A'
     elif score >= 55:
-        rank = "B"
-
+        rank = 'B'
     elif score >= 40:
-        rank = "C"
-
+        rank = 'C'
     else:
-        rank = "D"
+        rank = 'D'
 
     return {
-
-        "bpm":
-            round(tempo, 1),
-
-        "duration":
-            round(duration, 1),
-
-        "volume_change":
-            round(float(volume_change), 3),
-
-        "pitch_range":
-            round(float(pitch_range), 1),
-
-        "pitch_speed":
-            round(float(pitch_speed), 1),
-
-        "bpm_score":
-            round(float(bpm_score), 1),
-
-        "duration_score":
-            round(float(duration_score), 1),
-
-        "volume_score":
-            round(float(volume_score), 1),
-
-        "range_score":
-            round(float(range_score), 1),
-
-        "speed_score":
-            round(float(speed_score), 1),
-
-        "score":
-            score,
-
-        "rank":
-            rank
-
+        'bpm': round(tempo, 1),
+        'duration': round(duration, 1),
+        'volume_change': round(volume_change, 3),
+        'pitch_speed': round(pitch_speed, 1),
+        'progression_count': changes,
+        'instrument_density': round(instrument_density, 1),
+        'bpm_score': round(bpm_score, 1),
+        'duration_score': round(duration_score, 1),
+        'volume_score': round(volume_score, 1),
+        'speed_score': round(speed_score, 1),
+        'progression_score': round(progression_score, 1),
+        'density_score': round(density_score, 1),
+        'score': score,
+        'rank': rank
     }
