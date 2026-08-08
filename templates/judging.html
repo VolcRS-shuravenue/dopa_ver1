@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>解析中</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1 id="loading">解析中・</h1>
+
+    <p>
+        曲を解析しています。
+        しばらくお待ちください。
+    </p>
+
+</div>
+
+<script>
+
+let dots = 1;
+
+/* 波紋エフェクトのみ */
+
+document.addEventListener('click', e => {
+
+    let ripple = document.createElement('span');
+
+    ripple.className = 'ripple';
+
+    ripple.style.left = e.clientX + 'px';
+
+    ripple.style.top = e.clientY + 'px';
+
+    document.body.appendChild(ripple);
+
+    setTimeout(() => {
+        ripple.remove();
+    }, 600);
+
+});
+
+
+/* 解析中・・・アニメーション */
+
+setInterval(() => {
+
+    dots++;
+
+    if (dots > 3) {
+        dots = 1;
+    }
+
+    document.getElementById('loading')
+        .textContent =
+        '解析中' + '・'.repeat(dots);
+
+}, 500);
+
+
+/* 5秒後に解析実行 */
+
+setTimeout(() => {
+
+    fetch('/finish_analysis', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(() => {
+        window.location.href = '/result';
+    });
+
+}, 5000);
+
+</script>
+
+</body>
+</html>
