@@ -8,13 +8,16 @@ app.secret_key = 'dopagaki'
 UPLOAD='uploads'
 os.makedirs(UPLOAD, exist_ok=True)
 
+
+#トップページ
 @app.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/terms')
-def terms():
-    return render_template('terms.html')
+#曲のドパ度判定
+@app.route('/song_terms')
+def song_terms():
+    return render_template('song_terms.html')
 
 @app.route('/upload')
 def upload():
@@ -41,6 +44,21 @@ def finish_analysis():
 def result_page():
     return render_template('result.html', result=session.get('result',{}))
 
+
+#ドパガキ判定
+@app.route('/person_terms')
+def person_terms():
+    return render_template('person_terms.html')
+
+@app.route('/dopa_test')
+def dopa_test():
+    return render_template('dopa_test.html')
+
+
+
+
+
+#開発用
 if __name__ == '__main__':
     app.run(debug=True)
 
