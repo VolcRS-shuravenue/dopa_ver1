@@ -10,7 +10,7 @@ os.makedirs(UPLOAD, exist_ok=True)
 
 
 #トップページ
-@app.route('/index')
+@app.route('/')
 def index():
     return render_template('index.html')
 
