@@ -50,13 +50,50 @@ def result_page():
 def person_terms():
     return render_template('person_terms.html')
 
-@app.route('/dopa_test')
+@app.route('/readings')
 def dopa_test():
-    return render_template('dopa_test.html')
+    return render_template('readings.html')
+
+user_data = {}
+
+@app.route('/submit_metrics', methods=['POST'])
+def submit_metrics():
+
+    global user_data
+
+    user_data = request.json
+
+    score = calculate_score(user_data)
+
+    return jsonify({'score': score})
+
+@app.route("/result_metrics")
+def result_metrics():
+
+    score = int(request.args.get('score',0))
+
+    return render_template('result_metrics.html', score=score)
 
 
+def calculate_score(data):
+
+    scroll_count = data.get('scrollCount', 0)
+    scroll_speed = data.get('scrollSpeed', 0)
+    load_clicks = data.get('loadClicks', 0)
+    quiz_score = data.get('quizScore', 0)
+
+    score = 0
+
+    score += min(scroll_count * 0.4, 20)#スクロール回数
+    score += min(scroll_speed * 0.2, 20)#スクロール速度
+    score += min(load_clicks * 5, 30)#ロードクリック回数
+    score += (100 - quiz_score) * 0.3 #クイズの正答率
+
+    return round(score)
 
 
+if __name__ == "__main__":
+    app.run(debug=True)
 
 #開発用
 if __name__ == '__main__':

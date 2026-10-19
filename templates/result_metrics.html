@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+
+<meta charset="UTF-8">
+
+<title>診断結果</title>
+
+../static/style.css
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>診断結果</h1>
+
+<h2>{{ score }} 点</h2>
+
+{% if score < 20 %}
+<p>集中力は高い状態です。</p>
+{% elif score < 40 %}
+<p>軽度の衝動傾向があります。</p>
+{% elif score < 60 %}
+<p>中程度の衝動傾向があります。</p>
+{% elif score < 80 %}
+<p>かなり刺激依存傾向があります。</p>
+{% else %}
+<p>非常に高い刺激依存傾向があります。</p>
+{% endif %}
+
+/
+<button>もう一度</button>
+</a>
+
+</div>
+
+</body>
+</html>
