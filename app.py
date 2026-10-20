@@ -2,6 +2,8 @@
 from flask import Flask, render_template, request, session, jsonify
 from dopa_analyzer import analyze_mp3
 import os, uuid
+import random
+
 
 app = Flask(__name__)
 app.secret_key = 'dopagaki'
@@ -50,9 +52,26 @@ def result_page():
 def person_terms():
     return render_template('person_terms.html')
 
+
+TOPICS = [
+    "essay",
+    "explanation",
+    "novel"
+]
+
+
 @app.route('/readings')
 def dopa_test():
-    return render_template('readings.html')
+    article_type = random.choice(TOPICS)
+    if article_type == "essay":
+        readings_type = "readings1.html"
+    elif article_type == "explanation":
+        readings_type = "readings2.html"
+    elif article_type == "novel":
+        readings_type = "readings3.html"
+
+    return render_template(readings_type)
+
 
 user_data = {}
 
