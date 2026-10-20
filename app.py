@@ -54,23 +54,25 @@ def person_terms():
 
 
 TOPICS = [
+
+    "novel",
     "essay",
-    "explanation",
-    "novel"
+    "explanation"
+
 ]
 
 
 @app.route('/readings')
 def dopa_test():
     article_type = random.choice(TOPICS)
-    if article_type == "essay":
+    if article_type == "novel":
         readings_type = "readings1.html"
     elif article_type == "explanation":
         readings_type = "readings2.html"
-    elif article_type == "novel":
+    elif article_type == "essay":
         readings_type = "readings3.html"
 
-    return render_template(readings_type)
+    return render_template(readings_type, article_type=article_type)
 
 
 user_data = {}

@@ -54,5 +54,14 @@ body{
         height:120px;
         opacity:0
     }
+}.article{
+    text-align:left;
+    margin-top:20px
+}.article h2{
+    font-size:24px;
+    margin-bottom:10px
+}.article p{
+    font-size:18px;
+    line-height:1.6
 }
 
